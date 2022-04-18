@@ -101,7 +101,7 @@ public class GraphQLR4Test extends BaseResourceProviderR4Test {
 		try (CloseableHttpResponse response = ourHttpClient.execute(httpGet)) {
 			String resp = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
 			ourLog.info(resp);
-			assertThat(resp, containsString("\"id\":\"" + myConditionId0.toVersionless() + "\""));
+			assertThat(resp, containsString("\"id\":\"" + myConditionId0.toVersionless()));
 		}
 
 	}
