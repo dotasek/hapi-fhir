@@ -13,12 +13,12 @@ import java.io.InputStreamReader;
 
 import static org.apache.commons.lang3.StringUtils.defaultString;
 
-public class LocalFileValidationSupport implements IValidationSupport {
+public class LocalFileValidationSupport extends PrePopulatedValidationSupport {
 
-	final private FhirContext myCtx;
+
 
 	public LocalFileValidationSupport(FhirContext ctx) {
-		this.myCtx = ctx;
+		super(ctx);
 	}
 
 	@Override
@@ -26,14 +26,10 @@ public class LocalFileValidationSupport implements IValidationSupport {
 		return myCtx;
 	}
 
-	@Nullable
-	@Override
-	public IBaseResource fetchStructureDefinition(String theUrl) {
-		try {
-			String contents = IOUtils.toString(new InputStreamReader(new FileInputStream(theUrl), "UTF-8"));
-			return myCtx.newJsonParser().parseResource(contents);
-		} catch (IOException e) {
-			return null;
-		}
+	public void loadFile(String theFileName) throws IOException {
+		String contents = IOUtils.toString(new InputStreamReader(new FileInputStream(theFileName), "UTF-8"));
+		IBaseResource resource  = myCtx.newJsonParser().parseResource(contents);
+		this.addStructureDefinition(resource);
 	}
+
 }

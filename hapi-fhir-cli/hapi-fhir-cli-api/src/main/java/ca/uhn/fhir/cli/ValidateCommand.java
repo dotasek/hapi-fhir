@@ -165,9 +165,21 @@ public class ValidateCommand extends BaseCommand {
 					val.registerValidatorModule(instanceValidator);
 					ValidationSupportChain validationSupport = new ValidationSupportChain(
 						new DefaultProfileValidationSupport(ctx),
-						new InMemoryTerminologyServerValidationSupport(ctx),
-						new LocalFileValidationSupport(ctx),
-						new SnapshotGeneratingValidationSupport(ctx));
+						new InMemoryTerminologyServerValidationSupport(ctx));
+
+					if (theCommandLine.hasOption("l")) {
+						try {
+						String localProfile = theCommandLine.getOptionValue("l");
+						LocalFileValidationSupport localFileValidationSupport = new LocalFileValidationSupport(ctx);
+
+							localFileValidationSupport.loadFile(localProfile);
+
+						validationSupport.addValidationSupport(localFileValidationSupport);
+						validationSupport.addValidationSupport(new SnapshotGeneratingValidationSupport(ctx));
+						} catch (IOException e) {
+							throw new RuntimeException(e);
+						}
+					}
 
 					if (theCommandLine.hasOption("r")) {
 						validationSupport.addValidationSupport((IValidationSupport) new LoadingValidationSupportDstu3());
